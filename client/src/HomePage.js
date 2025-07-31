@@ -14,7 +14,23 @@ function HomePage() {
       .then(res => res.json())
       .then(data => {
         setIsLoggedIn(data.isLoggedIn);
-        setLoading(false);
+        if (data.isLoggedIn) {
+          fetch('http://localhost:5000/user-details', {
+            credentials: 'include'
+          })
+            .then(res => res.json())
+            .then(userData => {
+              if (userData.user && userData.user.username) {
+                setUsername(userData.user.username);
+              }
+              setLoading(false);
+            })
+            .catch(() => {
+              setLoading(false);
+            });
+        } else {
+          setLoading(false);
+        }
       })
       .catch(() => {
         setIsLoggedIn(false);
